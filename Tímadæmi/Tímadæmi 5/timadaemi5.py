@@ -128,7 +128,7 @@ def x_ish(a_str, x):
 
 
 # eins og að gera if x in a_str
-def check_if_in(a_str, x):
+[def check_if_in(a_str, x):
     
     if a_str == '':
         return False
@@ -136,7 +136,7 @@ def check_if_in(a_str, x):
     if x == a_str[0]:
         return True
     else:
-        return check_if_in(a_str[1:],x)
+        return check_if_in(a_str[1:],x)]
 
 
 
