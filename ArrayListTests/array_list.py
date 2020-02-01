@@ -40,7 +40,7 @@ class ArrayList:
     def insert(self, value, index):
         
         
-        if index <= self.size:
+        if 0<= index and index <= self.size:
 
             if self.size == self.capacity:
                 self.resize()
@@ -103,8 +103,10 @@ class ArrayList:
         if self.size == 0:
             raise IndexOutOfBounds
 
-        if 0 <= index and index <= self.size:
+        if 0 <= index and index < self.size:
             return self.array[index]
+        else:
+            raise IndexOutOfBounds
 
     #Time complexity: O(1) - constant time
     def get_last(self):
@@ -160,9 +162,13 @@ class ArrayList:
         self.size = 0
         self.capacity = ArrayList.CAPACITY
         self.array = [0] * self.capacity
+        self.ordered = True
 
     #Time complexity: O(n) - linear time in size of list
     def insert_ordered(self, value):
+
+        if self.size == 0:
+            self.ordered = True
 
         if self.ordered == False:
             raise NotOrdered()
@@ -171,6 +177,7 @@ class ArrayList:
                 self.resize()
             
             self.append(value)
+            self.ordered = True
 
             # Starts at the end and goes back
             for i in range(self.size-2, -1, -1):
@@ -186,7 +193,7 @@ class ArrayList:
     def find(self, value):
 
         if self.ordered:
-            return self.binary_search(self.array, value, 0, self.size)
+            return self.binary_search(value, 0, self.size)
     
         elif not self.ordered:
             return self.linear_search(self.array, value)
@@ -205,44 +212,26 @@ class ArrayList:
 
 
     #Time complexity: O(log n) - logarithmic time in size of list
-    def binary_search(self, a_list, value, start, end):
+    def binary_search(self, value, start, end):
+
+        if end == '':
+            end = self.size
 
         if (end-start) == 1:
-            if a_list[0] == value:
-                return 0
+            if self.array[start] == value:
+                return start
             else:
                 raise NotFound()
 
-        mid = (end-start)//2
+        mid = start + (end-start)//2
 
-        if a_list[mid] == value:
+        if self.array[mid] == value:
             return mid
-        elif value < a_list[mid]:
-            end = mid
-            new_list = self.get_new_list_lower(a_list, start, end, mid)
-
-            return self.binary_search(new_list, value, start, end)
+        elif value < self.array[mid]:
+            return self.binary_search(value, start, mid)
         else:
-            start = mid
-            new_list = self.get_new_list_higher(a_list, start, end, mid)
-            return mid+self.binary_search(new_list, value, start, end)        
+            return self.binary_search(value, mid+1, end)        
 
-    
-    def get_new_list_lower(self, a_list, start, end, mid):
-
-        new_list = [0]* (end-start)
-        for i in range(mid):
-            new_list[i] = a_list[i]
-        
-        return new_list
-
-    def get_new_list_higher(self, a_list, start, end, mid):
-        
-        new_list = [0]* (end-start)
-        for i in range(0,mid+1):
-            new_list[i] = a_list[i+mid]
-        
-        return new_list
 
     
     #Time complexity: O(n) - linear time in size of list
@@ -307,4 +296,3 @@ if __name__ == "__main__":
         print(str_print)
 
 
-#arr_lis = ArrayList()
