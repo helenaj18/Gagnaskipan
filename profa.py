@@ -1,10 +1,7 @@
-def foo(a_str, n):
-    if n == 0:
-        return 0
-    n -= 1
-    if a_str[n] == 'a':
-        return 1 + foo(a_str, n)
-    return foo(a_str, n)
+def bar(n, m):
+    if m == 0:
+        return 1
+    return n * bar(n, m-1)
 
 
-foo('ba',1)
+print(bar(2,3))

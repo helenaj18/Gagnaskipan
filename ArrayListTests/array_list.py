@@ -12,13 +12,13 @@ class NotOrdered(Exception):
 
 class ArrayList:
     CAPACITY = 4
-    SIZE = 0
+   
     def __init__(self):
         # Initializes the array
         self.capacity = ArrayList.CAPACITY
         self.array = [0] * ArrayList.CAPACITY
-        self.size = ArrayList.SIZE
-        self.order = True
+        self.size = 0
+        self.ordered = True
 
     #Time complexity: O(n) - linear time in size of list
     def __str__(self):
@@ -39,7 +39,8 @@ class ArrayList:
     #Time complexity: O(n) - linear time in size of list
     def insert(self, value, index):
         
-        if self.check_valid_index(index):
+        
+        if index <= self.size:
 
             if self.size == self.capacity:
                 self.resize()
@@ -53,42 +54,41 @@ class ArrayList:
             self.size += 1
 
             self.ordered = False
+        
+        else:
+            raise IndexOutOfBounds
 
 
     # Time complexity: O(1) - constant time
     def append(self, value):
         '''Adds value to the end of an array'''
-        self.insert(value, self.size)
 
-        if self.check_if_ordered():
-            self.ordered = True
-        else:
-            self.ordered = False
-    
-
-    def check_if_ordered(self):
-        '''Returns True if the array is ordered, else false'''
-        for i in range(self.size-1):
-            if self.array[i]>self.array[i+1]:
-                return False
+        if self.size == self.capacity:
+            self.resize()
         
-        return True
+        self.array[self.size] = value
+        self.ordered = False
+        self.size += 1
+
 
     def check_valid_index(self,index):
         '''Returns True if the index is valid,
          else raises an IndexOutofBounds'''
-
-        if self.size < index or index < -self.size:
+ 
+        if index != 0 and index >= self.size:
             raise IndexOutOfBounds()
         else:
             return True
 
     #Time complexity: O(1) - constant time
     def set_at(self, value, index):
-        if self.check_valid_index(index):
-            self.array[index] = value
 
-        self.ordered = False
+        if 0 <= index and index < self.size:
+            self.array[index] = value
+            self.ordered = False
+        
+        else:
+            raise IndexOutOfBounds
 
     #Time complexity: O(1) - constant time
     def get_first(self):
@@ -99,7 +99,11 @@ class ArrayList:
 
     #Time complexity: O(1) - constant time
     def get_at(self, index):
-        if self.check_valid_index(index):
+
+        if self.size == 0:
+            raise IndexOutOfBounds
+
+        if 0 <= index and index <= self.size:
             return self.array[index]
 
     #Time complexity: O(1) - constant time
@@ -112,7 +116,7 @@ class ArrayList:
 
     #Time complexity: O(n) - linear time in size of list
     def resize(self):
-        #ATH má ekki hafa *= 2
+        
         self.capacity *= 2
         new_array = [0]*self.capacity
 
@@ -125,32 +129,47 @@ class ArrayList:
     #Time complexity: O(n) - linear time in size of list
     def remove_at(self, index):
 
-        if self.check_valid_index(index):
-            for i in range(self.size, index, -1):
-                self.array[i] = self.array[i-1]
+        if 0 <= index and index < self.size:
+            for i in range(index, self.size-1):
+                self.array[i] = self.array[i+1]
 
             self.array[self.size-1] = None
             self.size -= 1
+        
+        else:
+            raise IndexOutOfBounds
 
-    # þarf að tékka á ef þetta er orðið mjög lítið miðað við capacity
-       # if self.capacity >= 2*self.size:
+        if 2*self.size < self.capacity:
+            self.resize_lower()
+    
+    def resize_lower(self):
+        
+        self.capacity = int(self.capacity/2)
 
+        new_array = [0] * self.capacity
+
+        for i in range(self.size):
+            new_array[i] = self.array[i]
+
+        self.array = new_array
             
 
     #Time complexity: O(1) - constant time
     def clear(self):
 
-        for i in range(self.size, 0, -1):
-            self.remove_at(i)
-        
+        self.size = 0
+        self.capacity = ArrayList.CAPACITY
+        self.array = [0] * self.capacity
 
     #Time complexity: O(n) - linear time in size of list
-    #Time complexity: O(log n) - logarithmic time in size of list
     def insert_ordered(self, value):
 
         if self.ordered == False:
             raise NotOrdered()
         else:
+            if self.capacity == self.size:
+                self.resize()
+            
             self.append(value)
 
             # Starts at the end and goes back
@@ -167,13 +186,14 @@ class ArrayList:
     def find(self, value):
 
         if self.ordered:
-            return self.binary_search(self.array, value, self.size)
+            return self.binary_search(self.array, value, 0, self.size)
     
         elif not self.ordered:
             return self.linear_search(self.array, value)
         else:
             raise NotFound()
             
+    #Time complexity: O(n) - linear time in size of list
     def linear_search(self, a_list, value):
 
         if a_list == []:
@@ -183,27 +203,49 @@ class ArrayList:
         
         return 1+self.linear_search(a_list[1:], value)
 
-    def binary_search(self, a_list, value, size):
 
-        if size == 1:
+    #Time complexity: O(log n) - logarithmic time in size of list
+    def binary_search(self, a_list, value, start, end):
+
+        if (end-start) == 1:
             if a_list[0] == value:
                 return 0
             else:
                 raise NotFound()
 
-        mid = size//2
+        mid = (end-start)//2
 
         if a_list[mid] == value:
             return mid
         elif value < a_list[mid]:
+            end = mid
+            new_list = self.get_new_list_lower(a_list, start, end, mid)
 
-            return 1+self.binary_search(a_list[:mid], value, size-1)
+            return self.binary_search(new_list, value, start, end)
         else:
+            start = mid
+            new_list = self.get_new_list_higher(a_list, start, end, mid)
+            return mid+self.binary_search(new_list, value, start, end)        
 
-            return mid+self.binary_search(a_list[mid:], value, size-1)        
+    
+    def get_new_list_lower(self, a_list, start, end, mid):
 
+        new_list = [0]* (end-start)
+        for i in range(mid):
+            new_list[i] = a_list[i]
+        
+        return new_list
+
+    def get_new_list_higher(self, a_list, start, end, mid):
+        
+        new_list = [0]* (end-start)
+        for i in range(0,mid+1):
+            new_list[i] = a_list[i+mid]
+        
+        return new_list
+
+    
     #Time complexity: O(n) - linear time in size of list
-    #Time complexity: O(log n) - logarithmic time in size of list
     def remove_value(self, value):
 
         index = self.find(value)
@@ -215,27 +257,54 @@ if __name__ == "__main__":
     # Do not add them outside this if statement
     # and make sure they are at this indent level
 
-    arr_lis = ArrayList()
-    print(str(arr_lis))
-    arr_lis.append(2)
-    arr_lis.insert_ordered(1)
-    arr_lis.append(7)
-    print(str(arr_lis))
-    print(arr_lis.find(7))
-    arr_lis.remove_value(7)
-    print(arr_lis)
-    # arr_lis.prepend(3)
-    # arr_lis.prepend(5)
-    # arr_lis.prepend(6)
-    # arr_lis.prepend(8)
 
-    # arr_lis.insert(1,9)
-    # print(str(arr_lis))
-    # arr_lis.set_at(7,2)
-    # print(str(arr_lis))
-    # print(arr_lis.get_first())
-    # print(arr_lis.get_at(1))
-    # print(arr_lis.get_last())
-    # arr_lis.clear()
-    # print(arr_lis)
+    def testAppend(arr_lis, value):
+        arr_lis.append(value)
+        print('The value {} has been added to the array, the array is now {}'.format(value, arr_lis))
+        
+    
+    def testPrepend(arr_lis, value):
+        arr_lis.prepend(value)
+        print('The value {} has been added in the front of the array, the array is now {}'.format(value, arr_lis))
 
+    def testInsert(arr_lis, value, index):
+        try:
+            arr_lis.insert(value, index)
+            str_print = 'The value {} has been added at index {} in the array, the array is now {}'.format(value, index, arr_lis)
+        except IndexOutOfBounds:
+            str_print = 'The index you selected is out of the range'
+        
+        print(str_print)
+    
+    def testSetAt(arr_lis, value, index):
+        try:
+            arr_lis.set_at(value, index)
+            str_print = 'The value {} has been set at index {} in the array, the array is now {}'.format(value, index, arr_lis)
+        except IndexOutOfBounds:
+            str_print = 'The index you selected is out of the range.'
+        
+        print(str_print)
+    
+    def testGetFirst(arr_lis):
+
+        try:
+            first = arr_lis.get_first()
+            str_print = 'The first value in the array is {}'.format(first)
+        except Empty:
+            str_print = 'The array is empty.'
+        
+        print(str_print)
+    
+
+    def testGetAt(arr_lis, index):
+        try:
+            value = arr_lis.get_at(index)
+            str_print = 'The array is {}. '.format(arr_lis)
+            str_print += 'The value at index {} in the array is {}.'.format(index, value)
+        except IndexOutOfBounds:
+            str_print = 'The index you selected is out of the range.'
+        
+        print(str_print)
+
+
+#arr_lis = ArrayList()

@@ -2,15 +2,15 @@
 # Tímaflækja O(2^n)
 
 def fibonacci(n):
-    if n == 0:
+    if n == 1:
         return 0
-    elif n == 1:
+    elif n == 2:
         return 1
     
     return fibonacci(n-1) + fibonacci(n-2)
 
 
-print(fibonacci(8))
+print(fibonacci(5))
 
 
 # Tímaflækja O(n)
