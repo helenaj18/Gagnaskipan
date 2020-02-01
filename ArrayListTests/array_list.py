@@ -196,23 +196,28 @@ class ArrayList:
             return self.binary_search(value, 0, self.size)
     
         elif not self.ordered:
-            return self.linear_search(self.array, value)
+            return self.linear_search(value,)
         else:
             raise NotFound()
             
     #Time complexity: O(n) - linear time in size of list
-    def linear_search(self, a_list, value):
+    def linear_search(self, value, start = 0):
 
-        if a_list == []:
+
+        if start == self.size:
             raise NotFound()
-        elif a_list[0] == value:
-            return 0
+        elif self.array[start] == value:
+            return start
         
-        return 1+self.linear_search(a_list[1:], value)
+        return self.linear_search(value, start+1)
+
 
 
     #Time complexity: O(log n) - logarithmic time in size of list
     def binary_search(self, value, start, end):
+
+        if value > self.array[self.size-1]:
+            raise NotFound
 
         if end == '':
             end = self.size
@@ -296,3 +301,37 @@ if __name__ == "__main__":
         print(str_print)
 
 
+# arr_lis = ArrayList()
+# arr_lis.insert_ordered(10)
+# arr_lis.insert_ordered(11)
+# arr_lis.insert_ordered(12)
+# arr_lis.insert_ordered(13)
+# arr_lis.insert_ordered(13)
+# arr_lis.insert_ordered(13)
+# arr_lis.insert_ordered(14)
+# arr_lis.insert_ordered(15)
+# arr_lis.insert_ordered(15)
+# arr_lis.insert_ordered(16)
+# arr_lis.insert_ordered(18)
+# arr_lis.insert_ordered(18)
+# arr_lis.insert_ordered(18)
+# arr_lis.insert_ordered(19)
+# arr_lis.insert_ordered(21)
+# arr_lis.insert_ordered(21)
+# arr_lis.insert_ordered(22)
+# arr_lis.insert_ordered(22)
+# arr_lis.insert_ordered(23)
+# arr_lis.insert_ordered(23)
+# arr_lis.insert_ordered(24)
+# arr_lis.insert_ordered(24)
+# arr_lis.insert_ordered(25)
+# arr_lis.insert_ordered(27)
+# arr_lis.insert_ordered(28)
+# arr_lis.insert_ordered(28)
+# arr_lis.insert_ordered(28)
+# arr_lis.insert_ordered(29)
+# arr_lis.insert_ordered(29)
+# arr_lis.insert_ordered(29)
+# arr_lis.insert_ordered(29)
+# arr_lis.insert_ordered(30)
+# print(arr_lis.find(31))
