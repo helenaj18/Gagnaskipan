@@ -1,20 +1,36 @@
 
 def modulus(a, b):  # ONLY NEEDS TO WORK FOR POSITIVE INTEGERS
-    if a < b:
+
+    if a == 0:
         return 0
     
-    return 1+modulus(a-b,b)
+    elif a < b:
+        return a
+    
+    return modulus(a-b, b)
+
+
 
 
 def how_many(lis1, lis2):
 
     if lis1 == [] or lis2 == []:
         return 0
-    if lis1[0] in lis2:
+    if check_if_in(lis2, lis1[0]):
         return 1+how_many(lis1[1:],lis2)
     
     return how_many(lis1[1:],lis2)
 
+
+def check_if_in(a_list, value):
+    
+    if a_list == []:
+        return False
+
+    if value == a_list[0]:
+        return True
+    else:
+        return check_if_in(a_list[1:],value)
 
 # FEEL FREE TO EDIT THE TESTS AND MAKE THEM BETTER
 # REMEMBER EDGE CASES!

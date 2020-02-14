@@ -71,15 +71,6 @@ class ArrayList:
         self.size += 1
 
 
-    def check_valid_index(self,index):
-        '''Returns True if the index is valid,
-         else raises an IndexOutofBounds'''
- 
-        if index != 0 and index >= self.size:
-            raise IndexOutOfBounds()
-        else:
-            return True
-
     #Time complexity: O(1) - constant time
     def set_at(self, value, index):
 
@@ -141,6 +132,8 @@ class ArrayList:
         else:
             raise IndexOutOfBounds
 
+        # If the capacity is more than twice as 
+        # big as the size, resize down
         if 2*self.size < self.capacity:
             self.resize_lower()
     
@@ -196,9 +189,8 @@ class ArrayList:
             return self.binary_search(value, 0, self.size)
     
         elif not self.ordered:
-            return self.linear_search(value,)
-        else:
-            raise NotFound()
+            return self.linear_search(value)
+
             
     #Time complexity: O(n) - linear time in size of list
     def linear_search(self, value, start = 0):
@@ -250,88 +242,4 @@ if __name__ == "__main__":
     # add your tests here or in a different file.
     # Do not add them outside this if statement
     # and make sure they are at this indent level
-
-
-    def testAppend(arr_lis, value):
-        arr_lis.append(value)
-        print('The value {} has been added to the array, the array is now {}'.format(value, arr_lis))
-        
-    
-    def testPrepend(arr_lis, value):
-        arr_lis.prepend(value)
-        print('The value {} has been added in the front of the array, the array is now {}'.format(value, arr_lis))
-
-    def testInsert(arr_lis, value, index):
-        try:
-            arr_lis.insert(value, index)
-            str_print = 'The value {} has been added at index {} in the array, the array is now {}'.format(value, index, arr_lis)
-        except IndexOutOfBounds:
-            str_print = 'The index you selected is out of the range'
-        
-        print(str_print)
-    
-    def testSetAt(arr_lis, value, index):
-        try:
-            arr_lis.set_at(value, index)
-            str_print = 'The value {} has been set at index {} in the array, the array is now {}'.format(value, index, arr_lis)
-        except IndexOutOfBounds:
-            str_print = 'The index you selected is out of the range.'
-        
-        print(str_print)
-    
-    def testGetFirst(arr_lis):
-
-        try:
-            first = arr_lis.get_first()
-            str_print = 'The first value in the array is {}'.format(first)
-        except Empty:
-            str_print = 'The array is empty.'
-        
-        print(str_print)
-    
-
-    def testGetAt(arr_lis, index):
-        try:
-            value = arr_lis.get_at(index)
-            str_print = 'The array is {}. '.format(arr_lis)
-            str_print += 'The value at index {} in the array is {}.'.format(index, value)
-        except IndexOutOfBounds:
-            str_print = 'The index you selected is out of the range.'
-        
-        print(str_print)
-
-
-# arr_lis = ArrayList()
-# arr_lis.insert_ordered(10)
-# arr_lis.insert_ordered(11)
-# arr_lis.insert_ordered(12)
-# arr_lis.insert_ordered(13)
-# arr_lis.insert_ordered(13)
-# arr_lis.insert_ordered(13)
-# arr_lis.insert_ordered(14)
-# arr_lis.insert_ordered(15)
-# arr_lis.insert_ordered(15)
-# arr_lis.insert_ordered(16)
-# arr_lis.insert_ordered(18)
-# arr_lis.insert_ordered(18)
-# arr_lis.insert_ordered(18)
-# arr_lis.insert_ordered(19)
-# arr_lis.insert_ordered(21)
-# arr_lis.insert_ordered(21)
-# arr_lis.insert_ordered(22)
-# arr_lis.insert_ordered(22)
-# arr_lis.insert_ordered(23)
-# arr_lis.insert_ordered(23)
-# arr_lis.insert_ordered(24)
-# arr_lis.insert_ordered(24)
-# arr_lis.insert_ordered(25)
-# arr_lis.insert_ordered(27)
-# arr_lis.insert_ordered(28)
-# arr_lis.insert_ordered(28)
-# arr_lis.insert_ordered(28)
-# arr_lis.insert_ordered(29)
-# arr_lis.insert_ordered(29)
-# arr_lis.insert_ordered(29)
-# arr_lis.insert_ordered(29)
-# arr_lis.insert_ordered(30)
-# print(arr_lis.find(31))
+    pass
