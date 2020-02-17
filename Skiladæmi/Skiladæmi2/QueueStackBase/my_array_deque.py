@@ -12,6 +12,7 @@ class ArrayDeque():
 
     
     def push_front(self, value):
+
         if self.size == self.capacity:
            self.resize()
         
@@ -29,15 +30,18 @@ class ArrayDeque():
         self.size += 1
         self.end = (self.end+1) % self.capacity
 
+
     def resize(self):
 
         self.capacity *= 2
         new_data = [None] * self.capacity
 
+        # If front is smallar than end, it's normal
         if self.front < self.end:
             for i in range(self.front, self.end):
                 new_data[i] = self.data[i]
         
+        # If end is bigger or equal to front, two for loops are needed
         else:
             counter = 0
             for i in range(self.front, self.size):
@@ -55,6 +59,7 @@ class ArrayDeque():
 
 
     def pop_front(self):
+
         ret_val =  self.data[self.front]
 
         self.data[self.front] = None
@@ -67,11 +72,12 @@ class ArrayDeque():
         
 
     def pop_back(self):
+
         if self.end != 0:
             ret_val =  self.data[self.end-1]
-
             self.data[self.end-1] = None
             self.end = (self.end-1) % self.capacity
+            
         else:
             ret_val = self.data[self.size-1]
             self.data[self.size-1] = None
@@ -84,6 +90,7 @@ class ArrayDeque():
 
     
     def __str__(self):
+
         a_str = ''
         if self.front >= self.end:
             for i in range(self.front, self.capacity):
@@ -101,6 +108,7 @@ class ArrayDeque():
         else:
             return a_str.strip(' ')
     
+
     def get_size(self):
         return self.size
 

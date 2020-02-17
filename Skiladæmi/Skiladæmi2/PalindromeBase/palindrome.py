@@ -10,70 +10,47 @@ def print_to_screen(head):
     else:
         print("")
 
+
 def palindrome(head):
-    
-    head, node = splitList(head, head)
-    node = reverseList(node)
-    
-    while head != None and node != None:
-        if head.data != node.data:
-            return False
-        head = head.next
-        node = node.next
 
-    return True
+    reverse_head = reverseList(head)
+
+    duplicate_head = duplicate(reverse_head)
+
+    head = reverseList(reverse_head)
+
+    return compare(head, duplicate_head)
 
 
-# def splitList(head):
-#     '''Splits a list in the middle'''
-#     node = head
-#     node_half = head
+def compare(head_1, head_2):
 
-
-#     while node.next != None and node.next.next != None:
-#         node = node.next.next
-#         node_half = node_half.next
-#     else:
-#         node = node_half.next
-#         node_half.next = None
-
-#         return head,node
-
-def splitList(head, node_half):
-    '''Splits a list in the middle'''
-    
-    node = head
-
-    if node.next == None or node.next.next == None:
-        node = node_half.next
-        node_half.next = None
-        return head, node
-
+    if head_2.next == None or head_1.next == None:
+        return True
+    elif head_2.data == head_1.data:
+        return compare(head_1.next, head_2.next)
     else:
-        splitList(node.next.next, node_half.next)
+        return False
+
+
+def duplicate(head):
+
+    if head.next == None:
+        return head
+    
+    new_node = Node(head.data)
+    new_node.next = duplicate(head.next)
+    
+    return new_node
 
 
 def reverseList(head):
     if head.next == None:
         return head
-    
 
     node = reverseList(head.next)
-
     head.next.next = head
     head.next = None
-
     return node
-
-def getString(head):
-    a_str = ''
-    curr = head
-
-    while curr != None:
-        a_str += str(curr.data) + ' '
-        curr = curr.next
-    
-    return a_str.upper()
 
 
 if __name__ == "__main__":
