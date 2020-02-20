@@ -258,6 +258,7 @@ insert_ordered(new.head, 4)
 print(new)
 
 
+# virkar ekki eins og ég vil
 def insertion_sort(head):
     
     n = head.next
@@ -276,9 +277,11 @@ def insertion_sort(head):
 new = DLL_Set()
 
 new.add_value(5)
+new.add_value(7)
 new.add_value(1)
 new.add_value(4)
-
+new.add_value(8)
+print(new)
 insertion_sort(new.head)
 print(new)
 
@@ -303,40 +306,46 @@ def mergeLists(head_one, head_two):
         head_two.next = mergeLists(head_one, head_two.next)
         return head_two
 
+
+# VITlaust sjá lausnir
 def mergeSort(head):
     # remove head and tail
     # set head to first data node
+    
+    head = head.next
+    tail.prev.next = None
+    tail = tail.prev
+
     new_head = mergeSortHelper(head)
 
     # set new head and tail
 
+    new_node = Node()
+
+    new_head.prev = new_node
+    new_node.next = new_head
+
+
 
 def mergeSortHelper(head):
-    node = head.next
-    node_half = head.next
 
-    if head.next.next == None:
+    node = head
+    node_half = head
+
+    if head == None:
         return head
 
-    elif head.next.next.next == None:
+    elif head.next == None:
         return head
 
-    while node.next.next != None and node.next.next.next != None:
+    while node.next != None and node.next.next != None:
         node = node.next.next
         node_half = node_half.next
     else:
         node = node_half.next
         node_half.next = None
+        return mergeLists(mergeSort(head), mergeSort(node))
 
-        new_head = Node()
-        new_head.next = node
-        node.prev = new_head
-
-        new_tail = Node()
-        new_tail.prev = node_half
-        node_half.next = new_tail
-
-        return mergeLists(mergeSortHelper(head), mergeSortHelper(node))
 
 new = DLL_Set()
 

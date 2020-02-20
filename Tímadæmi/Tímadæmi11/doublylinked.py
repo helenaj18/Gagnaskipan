@@ -63,9 +63,14 @@ class DLL_Deque(DLL):
 
     
     def pop_front(self):
-        self.head.next = self.head.next.next
-        self.head.next.prev = self.head
-        self.size -= 1
+        if self.size != 0:
+            ret_val = self.head.next.data
+            self.head.next = self.head.next.next
+            self.head.next.prev = self.head
+            self.size -= 1
+            return ret_val
+        else:
+            return None
 
 
     def pop_back(self):

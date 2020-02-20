@@ -16,7 +16,7 @@ def ordered_insert(a_list,num):
     return a_list
 
 
-#print(ordered_insert([1,2,3,5,6,8,9],num))
+print(ordered_insert([1,2,3,5,6,8,9],num))
 
 # Tímaflækjan er O(n) fyrir single insertion 
 # en ef maður myndi inserta fyrir lista með n stökum

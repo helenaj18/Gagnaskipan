@@ -96,16 +96,17 @@ def mergeSort(head):
 
 head = None
 head = headInsert(3,head)
-head = headInsert(5,head)
+head = headInsert(2,head)
 head = headInsert(1,head)
-printList(head)
+# printList(head)
 # printList(head)
 # print(listLength(head))
 # print(listSum(head))
 
-# insertOrdered(head, 4)
-# insertOrdered(head, 2)
-# printList(head)
+printList(head)
+insertOrdered(head, 4)
+insertOrdered(head, 2)
+printList(head)
 
 # new_head = reverseList(head)
 # printList(new_head)
