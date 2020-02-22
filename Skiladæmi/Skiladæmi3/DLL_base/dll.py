@@ -42,7 +42,8 @@ class DLL:
 
     
     def remove(self):
-        if self.curr_node != None and self.curr_node.data != None:
+        #if self.curr_node != None and self.curr_node.data != None:
+        if self.__len__() != 0 and self.curr_pos != self.__len__()-1:
             self.curr_node.prev.next = self.curr_node.next
             self.curr_node.next.prev = self.curr_node.prev
             
@@ -66,7 +67,7 @@ class DLL:
 
     def move_to_next(self):
 
-        if self.curr_pos != self.__len__()-1 and self.curr_node != None:
+        if self.curr_pos != self.__len__()-1 and self.__len__() != 0:
             self.curr_pos += 1
             self.curr_node = self.curr_node.next
 
@@ -79,12 +80,15 @@ class DLL:
     
 
     def move_to_pos(self, position):
-        if position > 0 and position < self.__len__():
+        if position >= 0 and position < self.__len__():
             
             if self.curr_pos < position:
 
                 while self.curr_pos != position:
-                    self.move_to_next()    
+                    if self.curr_node == None:
+                        self.curr_node = self.head.next.next
+                    
+                    self.move_to_next()
 
             else:
 
@@ -104,6 +108,9 @@ class DLL:
                 if self.curr_pos == counter:
                     self.curr_pos = 0
                     self.curr_node = self.head.next
+                
+                self.size -= 1
+                #self.curr_node = n.next
             
             n = n.next
             counter += 1
@@ -126,70 +133,53 @@ class DLL:
 
     def sort(self):
         n = self.head.next
-        
-        while n.next.data != None:
-            if n.data > n.next.data:
-                temp = n.data
-                n.data = n.next.data
-                n.next.data = temp
-
-                while n.prev.data != None and n.data < n.prev.data:
+        if n.next != None:
+            while n.next.data != None:
+                if n.data > n.next.data:
                     temp = n.data
-                    n.data = n.prev.data
-                    n.prev.data = temp
-                    n = n.prev
-                    
-            n = n.next
+                    n.data = n.next.data
+                    n.next.data = temp
 
-        self.curr_pos = 0
-        self.curr_node = self.head.next
+                    while n.prev.data != None and n.data < n.prev.data:
+                        temp = n.data
+                        n.data = n.prev.data
+                        n.prev.data = temp
+                        n = n.prev
+                        
+                n = n.next
 
+            self.curr_pos = 0
+            self.curr_node = self.head.next
 
-print("\n\nTESTING THE BASIC STUFF\n")
 
 dll = DLL()
-print(str(dll) + "   -   current value: " + str(dll.get_value()) + "   -   size: " + str(len(dll)))
-dll.insert("A")
-print(str(dll) + "   -   current value: " + str(dll.get_value()) + "   -   size: " + str(len(dll)))
-dll.insert("B")
-print(str(dll) + "   -   current value: " + str(dll.get_value()) + "   -   size: " + str(len(dll)))
-dll.insert("C")
-print(str(dll) + "   -   current value: " + str(dll.get_value()) + "   -   size: " + str(len(dll)))
-dll.insert("D")
-print(str(dll) + "   -   current value: " + str(dll.get_value()) + "   -   size: " + str(len(dll)))
-dll.insert("E")
-print(str(dll) + "   -   current value: " + str(dll.get_value()) + "   -   size: " + str(len(dll)))
-dll.move_to_next()
-print(str(dll) + "   -   current value: " + str(dll.get_value()) + "   -   size: " + str(len(dll)))
-dll.move_to_next()
-print(str(dll) + "   -   current value: " + str(dll.get_value()) + "   -   size: " + str(len(dll)))
-dll.insert("1")
-print(str(dll) + "   -   current value: " + str(dll.get_value()) + "   -   size: " + str(len(dll)))
-dll.insert("2")
-print(str(dll) + "   -   current value: " + str(dll.get_value()) + "   -   size: " + str(len(dll)))
-dll.move_to_next()
-print(str(dll) + "   -   current value: " + str(dll.get_value()) + "   -   size: " + str(len(dll)))
-dll.insert("3")
-print(str(dll) + "   -   current value: " + str(dll.get_value()) + "   -   size: " + str(len(dll)))
-dll.insert("4")
-print(str(dll) + "   -   current value: " + str(dll.get_value()) + "   -   size: " + str(len(dll)))
-dll.move_to_prev()
-print(str(dll) + "   -   current value: " + str(dll.get_value()) + "   -   size: " + str(len(dll)))
-dll.insert("VALUE")
-print(str(dll) + "   -   current value: " + str(dll.get_value()) + "   -   size: " + str(len(dll)))
-dll.move_to_pos(8)
-print(str(dll) + "   -   current value: " + str(dll.get_value()) + "   -   size: " + str(len(dll)))
-dll.remove()
-print(str(dll) + "   -   current value: " + str(dll.get_value()) + "   -   size: " + str(len(dll)))
-dll.remove()
-print(str(dll) + "   -   current value: " + str(dll.get_value()) + "   -   size: " + str(len(dll)))
-
-
-dll.remove()
-print(str(dll) + "   -   current value: " + str(dll.get_value()) + "   -   size: " + str(len(dll)))
-dll.move_to_pos(2)
-print(str(dll) + "   -   current value: " + str(dll.get_value()) + "   -   size: " + str(len(dll)))
-dll.remove()
-print(str(dll) + "   -   current value: " + str(dll.get_value()) + "   -   size: " + str(len(dll)))
-dll.remove()
-print(str(dll) + "   -   current value: " + str(dll.get_value()) + "   -   size: " + str(len(dll)))
+dll.insert(28)
+dll.insert(27)
+dll.insert(25)
+dll.insert(25)
+dll.insert(24)
+dll.insert(24)
+dll.insert(23)
+dll.insert(22)
+dll.insert(20)
+dll.insert(18)
+dll.insert(20)
+dll.insert(12)
+dll.insert(24)
+dll.insert(28)
+dll.insert(16)
+dll.insert(11)
+dll.insert(17)
+dll.insert(25)
+dll.insert(25)
+dll.insert(24)
+dll.insert(29)
+dll.insert(11)
+print(dll)
+dll.remove_all(11)
+dll.move_to_pos(21)
+print(dll.curr_pos)
+dll.insert(16)
+print(dll.curr_pos)
+print(dll)
+print(dll.size)
