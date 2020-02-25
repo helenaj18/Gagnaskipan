@@ -33,6 +33,7 @@ class DLL:
         return ret_str
 
     def insert(self, value):
+        '''Inserts a new node at the current position'''
         new_node = Node(self.curr_node.prev, self.curr_node, value)
         self.curr_node.prev.next = new_node
         self.curr_node.prev = new_node
@@ -42,8 +43,9 @@ class DLL:
 
     
     def remove(self):
-        #if self.curr_node != None and self.curr_node.data != None:
-        if self.__len__() != 0 and self.curr_pos != self.__len__()-1:
+        '''Removes the node at the current position'''
+
+        if self.__len__() != 0 and self.curr_node != None and self.curr_node.data != None:
             self.curr_node.prev.next = self.curr_node.next
             self.curr_node.next.prev = self.curr_node.prev
             
@@ -53,12 +55,14 @@ class DLL:
             
             else:
                 self.curr_node = self.tail
-                self.curr_pos = 0
+                self.curr_pos = self.__len__()-1
             
             self.size -= 1
 
     
     def get_value(self):
+        '''Gets the value at the current node'''
+
         if self.curr_node != None:
             return self.curr_node.data
         else:
@@ -66,13 +70,15 @@ class DLL:
 
 
     def move_to_next(self):
+        '''Moves the current node one item closer to tail '''
 
-        if self.curr_pos != self.__len__()-1 and self.__len__() != 0:
+        if self.curr_pos <= self.__len__()-1 and self.__len__() != 0:
             self.curr_pos += 1
             self.curr_node = self.curr_node.next
 
 
     def move_to_prev(self):
+        '''Moves the current node one item closer to head '''
 
         if self.curr_pos != 0 and self.curr_node != None:
             self.curr_pos -= 1
@@ -80,6 +86,8 @@ class DLL:
     
 
     def move_to_pos(self, position):
+        '''Moves the current node to position '''
+
         if position >= 0 and position < self.__len__():
             
             if self.curr_pos < position:
@@ -94,9 +102,16 @@ class DLL:
 
                 while self.curr_pos != position:
                     self.move_to_prev()
+
+        
+        # If the position is at the tail
+        elif position == self.__len__():
+            self.curr_node = self.tail
+            self.curr_pos = position
     
 
     def remove_all(self, value):
+        '''Removes all nodes with value as data'''
 
         n = self.head.next
         counter = 0
@@ -105,17 +120,22 @@ class DLL:
             if n.data == value:
                 n.next.prev = n.prev
                 n.prev.next = n.next
-                if self.curr_pos == counter:
+
+                # If a value is removed before the current position
+                if self.curr_pos > counter:
+                    self.curr_pos -= 1
+
+                if self.curr_node.data == value:
                     self.curr_pos = 0
                     self.curr_node = self.head.next
                 
                 self.size -= 1
-                #self.curr_node = n.next
             
             n = n.next
             counter += 1
 
     def reverse(self):
+        '''Reverses the list'''
 
         n = self.head
 
@@ -132,7 +152,10 @@ class DLL:
     
 
     def sort(self):
+        '''Sorts the list'''
+
         n = self.head.next
+        # If the list is not empty
         if n.next != None:
             while n.next.data != None:
                 if n.data > n.next.data:
@@ -150,36 +173,3 @@ class DLL:
 
             self.curr_pos = 0
             self.curr_node = self.head.next
-
-
-dll = DLL()
-dll.insert(28)
-dll.insert(27)
-dll.insert(25)
-dll.insert(25)
-dll.insert(24)
-dll.insert(24)
-dll.insert(23)
-dll.insert(22)
-dll.insert(20)
-dll.insert(18)
-dll.insert(20)
-dll.insert(12)
-dll.insert(24)
-dll.insert(28)
-dll.insert(16)
-dll.insert(11)
-dll.insert(17)
-dll.insert(25)
-dll.insert(25)
-dll.insert(24)
-dll.insert(29)
-dll.insert(11)
-print(dll)
-dll.remove_all(11)
-dll.move_to_pos(21)
-print(dll.curr_pos)
-dll.insert(16)
-print(dll.curr_pos)
-print(dll)
-print(dll.size)
