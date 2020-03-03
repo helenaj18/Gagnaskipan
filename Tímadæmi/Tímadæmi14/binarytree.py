@@ -74,6 +74,7 @@ class BinaryTree:
         return self.change_value_recur(val_1, val_2, self.root)
     
 
+# Mín tilraun
     def change_daughter_recur(self, value, node):
         if node.left == None or node.right == None:
             return
@@ -87,8 +88,22 @@ class BinaryTree:
         self.change_daughter_recur(value, node.left)
         self.change_daughter_recur(value, node.right)
     
+# Kennara tilraun
+    def change_daughter_recur1(self, value, node, parent):
+        if node == None:
+            return
+        if node.data == value:
+            if parent != None:
+                temp = node.data
+                node.data = parent.data
+                parent.data = temp
+        
+        self.change_daughter_recur1(value, node.left, node)
+        self.change_daughter_recur1(value, node.right, node)
+        
+    
     def change_daughter(self, value):
-        return self.change_daughter_recur(value, self.root)
+        return self.change_daughter_recur1(value, self.root, None)
 
 
     def print_inorder_recur(self, node):
