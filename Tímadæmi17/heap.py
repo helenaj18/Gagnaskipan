@@ -19,31 +19,31 @@ class PriorityQueue:
         if self.root == None:
             self.last_node = self.root = HeapNode(priority, value)
         
+
         # síðasta nóða er vinstra barn
         elif self.last_node.parent != None and self.last_node is self.last_node.parent.left:
             self.last_node.parent.right = HeapNode(priority, value, self.last_node.parent)
             self.last_node = self.last_node.parent.right
         
         else:
-            self.add_with_two_babies(priority, value)
+            next_to_add = self.last_node
+
+            while next_to_add is not self.root and next_to_add in next_to_add.parent.right:
+                next_to_add = next_to_add.parent
+            
+            if next_to_add is not self.root:
+                # einn upp og svo einn til hægri
+                next_to_add = next_to_add.parent.right
+            
+            while next_to_add.left != None:
+                next_to_add = next_to_add.left
+            
+            next_to_add.left = HeapNode(priority, value, next_to_add)
 
         # Laga röðina
         self.bubble_up()
 
-    def add_with_two_babies(self, priority, value):
-        next_to_add = self.last_node
-
-        while next_to_add is not self.root and next_to_add in next_to_add.parent.right:
-            next_to_add = next_to_add.parent
-        
-        if next_to_add is not self.root:
-            # einn upp og svo einn til hægri
-            next_to_add = next_to_add.parent.right
-        
-        while next_to_add != None:
-            next_to_add = next_to_add.left
-        
-        next_to_add.left = HeapNode(priority, value, next_to_add)
+    
 
     def bubble_up(self):
         '''Gets the order correct '''
@@ -135,3 +135,10 @@ h.add(1,8)
 h.add(9,9)
 
 print(h.root.data)
+print(h.root.left.data)
+print(h.root.right.data)
+# print(h.root.left.left.data)
+# print(h.root.left.right.data)
+# print(h.root.right.left.data)
+# print(h.root.right.right.data)
+# print(h.root.left.left.left.data)

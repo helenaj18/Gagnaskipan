@@ -23,15 +23,15 @@ class Linked_list:
         self.head = new_node
 
         
-    # def contains(self, val):
-    #     n = self.head.next
-    #     if n != None:
-    #         while n.next != None:
-    #             if n.data == val:
-    #                 return True
-    #             n = n.next
+    def __contains__(self, val):
+        n = self.head
+        if n != None:
+            while n != None:
+                if n.data.name == val:
+                    return True
+                n = n.next
 
-    #     return False
+        return False
 
     def __str__(self):
         ret_str = ''
@@ -59,16 +59,23 @@ Then feel free to make your own, more extensive tests.
 
 def run_commands_on_tree(tree):
     print("  current directory: " + tree.name)
+
     while True:
+        
         user_input = input()
         command = user_input.split()
         if command[0] == "mkdir":
             print("  Making subdirectory " + command[1])
                 # command[1] is the name of the subdirectory that should be made here
-            new_node = TreeNode(command[1])
-            tree.children.push_front(new_node)
+            
+            if tree.children.__contains__(command[1]):
+                unique = False
+            else:
+                #new_node = TreeNode(command[1])
+                tree.children.push_front(TreeNode(command[1]))
+                unique = True
 
-            if False:
+            if unique == False:
                 print("  Subdirectory with same name already in directory")
 
         elif command[0] == "ls":
@@ -76,30 +83,37 @@ def run_commands_on_tree(tree):
             n = tree.children.head
             
             while n != None and n.data != None:
-                print(n.data.name)
+                print(n.data)
                 n = n.next
 
         elif command[0] == "cd":
             print("  switching to directory " + command[1])
+            
                 # command[1] is the name of the subdirectory that should now become the current directory
             found = False
 
             n = tree.children.head
-            
+            counter = 0
             while n != None:
                 if n.data.name == command[1]:
                     run_commands_on_tree(n.data)
                     found = True
+                    break
+                
+                counter += 1
                 n = n.next
 
             if command[1] == "..":
-                if False:
-                    print("Exiting directory program")
+                # if False:
+                #     print("Exiting directory program")
                 return
+            
             else:
-                if found == False:
-                    print("  No folder with that name exists")
-            print("  current directory: " + str(command[1])) # Add the name of the current directory here
+                print("  current directory: " + tree.name)
+
+            if found == False:
+                print("  No folder with that name exists")
+            
 
         elif command[0] == "rm":
             print("  removing directory " + command[1])
