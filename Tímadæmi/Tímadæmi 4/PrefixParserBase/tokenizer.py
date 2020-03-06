@@ -11,3 +11,4 @@ class Tokenizer:
         ret_val = self.statement[self.position:i]
         self.position = i + 1
         return ret_val
+

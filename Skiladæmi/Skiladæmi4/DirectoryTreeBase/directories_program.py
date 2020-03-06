@@ -22,6 +22,24 @@ class Linked_list:
         self.size += 1
         self.head = new_node
 
+
+    def _insert_ordered(self, value, node):
+
+        if node == None:
+            return Node(value, node)
+        
+        elif value.name < node.data.name:
+            new_node = Node(value, node)
+            return new_node
+        
+        else:
+            node.next = self._insert_ordered(value, node.next)
+            return node
+
+    
+    def insert_ordered(self, value):
+        self.head = self._insert_ordered(value, self.head)
+
         
     def __contains__(self, val):
         n = self.head
@@ -71,8 +89,8 @@ def run_commands_on_tree(tree):
             if tree.children.__contains__(command[1]):
                 unique = False
             else:
-                #new_node = TreeNode(command[1])
-                tree.children.push_front(TreeNode(command[1]))
+                new_node = TreeNode(command[1])
+                tree.children.insert_ordered(new_node)
                 unique = True
 
             if unique == False:
@@ -83,7 +101,7 @@ def run_commands_on_tree(tree):
             n = tree.children.head
             
             while n != None and n.data != None:
-                print(n.data)
+                print(n.data.name)
                 n = n.next
 
         elif command[0] == "cd":
@@ -104,15 +122,20 @@ def run_commands_on_tree(tree):
                 n = n.next
 
             if command[1] == "..":
-                # if False:
-                #     print("Exiting directory program")
+                if tree.children == None:
+                    print("Exiting directory program")
                 return
             
+            elif found == False:
+                print("  No folder with that name exists")
+                print("  current directory: " + tree.name)
+
             else:
                 print("  current directory: " + tree.name)
 
-            if found == False:
-                print("  No folder with that name exists")
+
+            
+            
             
 
         elif command[0] == "rm":
@@ -132,6 +155,7 @@ def run_commands_on_tree(tree):
                 print("  directory successfully removed!")
             else:
                 print("  No folder with that name exists")
+                print("  current directory: " + tree.name)
         else:
             print("  command not recognized")
 

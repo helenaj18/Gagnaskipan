@@ -13,15 +13,65 @@ class OutputFormat(Enum):
     INFIX = 1
     POSTFIX = 2
 
+
+
+class TreeNode:
+    def __init__(self, data = '', left = None, right = None):
+        self.data = data
+        self.left = left
+        self.right = right
+
+
+class Tokenizer:
+    def __init__(self, str_statement):
+        self.statement = str_statement
+        self.position = 0
+
+    def get_next_token(self):
+        i = self.position
+        while i < len(self.statement) and self.statement[i] != " ":
+            i += 1
+        ret_val = self.statement[self.position:i]
+        self.position = i + 1
+        return ret_val
+
+
 class PrefixParseTree:
     def __init__(self):
-        pass
+        self.root = None
+        self.format = 'prefix'
 
     def load_statement_string(self, statement):
-        pass
+        tokenizer = Tokenizer(statement)
+        self.root = self.load_statement_string_recur(tokenizer, self.root)
+
+    def load_statement_string_recur(self, tokenizer, node):
+
+        token = tokenizer.get_next_token()
+
+        if node is self.root:
+            self.root = TreeNode(token)
+            self.load_statement_string_recur(tokenizer, self.root.left)
+        
+        elif node == None and not (token in ['+', '-', '*', '/']):
+            return TreeNode(token)
+        
+        elif node.left == None:
+            node.left = self.load_statement_string_recur(tokenizer, node.left)
+            
+        
+        elif node.right == None:
+            node.right = self.load_statement_string_recur(tokenizer, node.right)
+        
+        return node
+
 
     def set_format(self, out_format):
-        pass
+        if out_format == 'INFIX':
+            self.format == 'infix'
+        
+        elif out_format == 'POSTFIX':
+            self.format == 'postfix'
 
     def root_value(self):
         pass
@@ -32,9 +82,43 @@ class PrefixParseTree:
     def solve_tree(self, root_value):
         pass
 
-    def __str__(self):
-        return ""
 
+    def str_prefix(self, node):
+        if node == None:
+            return
+
+        return str(node.data) + ' ' + self.str_prefix(node.left) + self.str_prefix(node.right)
+
+
+    def str_infix(self, node):
+        if node == None:
+            return ''
+        
+        
+        return self.str_infix(node.left) + str(node.data) + ' ' + self.str_infix(node.right)
+    
+
+    def str_postfix(self, node):
+        if node == None:
+            return
+
+        return self.str_prefix(node.left) + self.str_prefix(node.right) + ' ' + str(node.data)
+
+
+    def __str__(self):
+
+        if self.format == 'prefix':
+            a_str = self.str_prefix(self.root)
+        
+        elif self.format == 'infix':
+            a_str = self.str_infix(self.root)
+        
+        elif self.format == 'postfix':
+            a_str = self.str_postfix(self.root)
+
+        return a_str
+
+statement = ''
 
 # This is a tester function to test that
 # the output and/or error message from the
