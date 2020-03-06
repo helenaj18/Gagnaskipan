@@ -16,10 +16,11 @@ class OutputFormat(Enum):
 
 
 class TreeNode:
-    def __init__(self, data = '', left = None, right = None):
+    def __init__(self, data = '', left = None, right = None, parent = None):
         self.data = data
         self.left = left
         self.right = right
+        self.parent = parent
 
 
 class Tokenizer:
@@ -47,34 +48,66 @@ class PrefixParseTree:
 
     def load_statement_string_recur(self, tokenizer, node):
 
-        token = tokenizer.get_next_token()
-
-        if node is self.root:
-            self.root = TreeNode(token)
-            self.load_statement_string_recur(tokenizer, self.root.left)
-        
-        elif node == None and not (token in ['+', '-', '*', '/']):
-            return TreeNode(token)
-        
-        elif node.left == None:
-            node.left = self.load_statement_string_recur(tokenizer, node.left)
-            
-        
-        elif node.right == None:
-            node.right = self.load_statement_string_recur(tokenizer, node.right)
+        for token in tokenizer.statement:
+            if token != ' ':
+                node = self.add(token, node)
         
         return node
 
+    def add(self, token, node):
+
+        if self.root == None:
+            self.root = TreeNode(token)
+            node = self.root
+            return self.root
+        
+        elif token in ['+', '-', '*', '/'] and node.left == None:
+            node.left = self.add(token, node.left)
+        
+        elif token in ['+', '-', '*', '/'] and node.right == None:
+            node.right = self.add(token, node.right)
+        
+        elif node.left == None:
+            node.left = TreeNode(token)
+        
+        elif node.right == None:
+            node.right = TreeNode(token)
+        
+        return node
+        
 
     def set_format(self, out_format):
-        if out_format == 'INFIX':
-            self.format == 'infix'
+
+        if out_format.name == 'PREFIX':
+            self.format = 'prefix'
+
+        elif out_format.name == 'INFIX':
+            self.format = 'infix'
         
-        elif out_format == 'POSTFIX':
-            self.format == 'postfix'
+        elif out_format.name == 'POSTFIX':
+            self.format = 'postfix'
 
     def root_value(self):
-        pass
+        n = self.root
+
+
+    if token.isdigit():
+        return int(token)
+    
+    if token == '+': 
+        return prefix_parser_recursive(tokenizer) + prefix_parser_recursive(tokenizer)
+    elif token == '-':
+        return prefix_parser_recursive(tokenizer) - prefix_parser_recursive(tokenizer)
+    elif token == '*':
+        return prefix_parser_recursive(tokenizer) * prefix_parser_recursive(tokenizer)
+    elif token == '/':
+        a = prefix_parser_recursive(tokenizer)
+        b = prefix_parser_recursive(tokenizer)
+
+        if b == 0:
+            raise DivisionByZero()
+        
+        return a/b
 
     def simplify_tree(self):
         pass
@@ -85,7 +118,7 @@ class PrefixParseTree:
 
     def str_prefix(self, node):
         if node == None:
-            return
+            return ''
 
         return str(node.data) + ' ' + self.str_prefix(node.left) + self.str_prefix(node.right)
 
@@ -100,7 +133,7 @@ class PrefixParseTree:
 
     def str_postfix(self, node):
         if node == None:
-            return
+            return ''
 
         return self.str_prefix(node.left) + self.str_prefix(node.right) + ' ' + str(node.data)
 
