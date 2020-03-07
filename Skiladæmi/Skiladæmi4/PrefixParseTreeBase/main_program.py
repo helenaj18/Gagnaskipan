@@ -56,23 +56,33 @@ class PrefixParseTree:
 
     def add(self, token, node):
 
-        if self.root == None:
-            self.root = TreeNode(token)
-            node = self.root
-            return self.root
+        if node == None and node is self.root:
+            node = TreeNode(token)
+            self.root = node
+        
+        elif node == None:
+            node = TreeNode(token)
         
         elif token in ['+', '-', '*', '/'] and node.left == None:
             node.left = self.add(token, node.left)
+            node.left.parent = node
+            return node.left
         
         elif token in ['+', '-', '*', '/'] and node.right == None:
             node.right = self.add(token, node.right)
+            node.right.parent = node
+            return node.right
         
         elif node.left == None:
-            node.left = TreeNode(token)
+            node.left = self.add(token, node.left)
+            node.left.parent = node
         
         elif node.right == None:
-            node.right = TreeNode(token)
-        
+            node.right = self.add(token, node.right)
+            node.right.parent = node
+            if not node is self.root:
+                return node.parent
+
         return node
         
 
@@ -88,29 +98,66 @@ class PrefixParseTree:
             self.format = 'postfix'
 
     def root_value(self):
+        return self.root_value_recur(self.root)
+
+    def root_value_recur(self, n):
+
+        while n != None:
+
+            if n.data.isdigit():
+                return int(n.data)
+            
+            elif n.data == '+':
+                return self.root_value_recur(n.left) + self.root_value_recur(n.right)
+
+            elif n.data == '-':
+                return self.root_value_recur(n.left) - self.root_value_recur(n.right)
+
+            elif n.data == '*':
+                return self.root_value_recur(n.left) * self.root_value_recur(n.right)
+
+            elif n.data == '/':
+                a = self.root_value_recur(n.left)
+                b = self.root_value_recur(n.right)
+
+                if b == 0:
+                    raise DivisionByZero()
+                
+                return a/b
+    
+    def simplify_tree(self):
+        n = self.root
+        while n != None:
+            self.simplify_tree_recur(n)
+            n = n.left
+        
         n = self.root
 
+        while n != None:
+            self.simplify_tree_recur(n)
+            n = n.right
 
-    if token.isdigit():
-        return int(token)
-    
-    if token == '+': 
-        return prefix_parser_recursive(tokenizer) + prefix_parser_recursive(tokenizer)
-    elif token == '-':
-        return prefix_parser_recursive(tokenizer) - prefix_parser_recursive(tokenizer)
-    elif token == '*':
-        return prefix_parser_recursive(tokenizer) * prefix_parser_recursive(tokenizer)
-    elif token == '/':
-        a = prefix_parser_recursive(tokenizer)
-        b = prefix_parser_recursive(tokenizer)
 
-        if b == 0:
-            raise DivisionByZero()
-        
-        return a/b
+    def simplify_tree_recur(self, node):
 
-    def simplify_tree(self):
-        pass
+        if node != None:
+            if node.left.data.isdigit() and node.right.data.isdigit():
+                if node.data == '+':
+                    return node.left.data + node.right.data
+                
+                elif node.data == '-':
+                    return node.left.data - node.right.data
+                
+                elif node.data == '*':
+                    return node.left.data * node.right.data
+                
+                elif node.data == '/':
+                    if node.right.data == 0:
+                        raise DivisionByZero()
+                    
+                    return node.left.data / node.right.data
+
+
 
     def solve_tree(self, root_value):
         pass
@@ -135,7 +182,7 @@ class PrefixParseTree:
         if node == None:
             return ''
 
-        return self.str_prefix(node.left) + self.str_prefix(node.right) + ' ' + str(node.data)
+        return self.str_postfix(node.left) + self.str_postfix(node.right) + ' ' + str(node.data)
 
 
     def __str__(self):
