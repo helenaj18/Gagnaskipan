@@ -102,5 +102,15 @@ storu2
   removing directory litlu1
   directory successfully removed!
   Listing the contents of current directory,  STRJAL
+litlu2
+litlu3
+storu1
+storu2
   removing directory litlu2
+  directory successfully removed!
+  Listing the contents of current directory,  STRJAL
+litlu3
+storu1
+storu2
+  Making subdirectory litlu2
 Exiting directory program in a BAD way

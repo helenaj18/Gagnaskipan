@@ -17,10 +17,10 @@ class Linked_list:
         self.size = 0
 
     
-    def push_front(self, value):
-        new_node = Node(value, self.head)
-        self.size += 1
-        self.head = new_node
+    # def push_front(self, value):
+    #     new_node = Node(value, self.head)
+    #     self.size += 1
+    #     self.head = new_node
 
 
     def _insert_ordered(self, value, node):
@@ -35,7 +35,15 @@ class Linked_list:
         else:
             node.next = self._insert_ordered(value, node.next)
             return node
+    
 
+    def remove(self, value):
+
+        n = self.head
+
+        while n != None:
+            if n.data == value:
+                n.next = n.next.next
     
     def insert_ordered(self, value):
         self.head = self._insert_ordered(value, self.head)
@@ -132,10 +140,6 @@ def run_commands_on_tree(tree):
 
             else:
                 print("  current directory: " + tree.name)
-
-
-            
-            
             
 
         elif command[0] == "rm":
@@ -149,6 +153,7 @@ def run_commands_on_tree(tree):
                 if n.data.name == command[1]:
                     n.data = None
                     found = True
+                    break
                 n = n.next
 
             if found == True:
