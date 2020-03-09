@@ -37,13 +37,20 @@ class Linked_list:
             return node
     
 
-    def remove(self, value):
-
+    def remove(self, node):
         n = self.head
+        if self.head == node:
+            self.head = self.head.next
 
-        while n != None:
-            if n.data == value:
-                n.next = n.next.next
+        else:
+
+            while n.next != None:
+                if n.next == node:
+                    n.next = n.next.next
+
+                if n.next != None:
+                    n = n.next
+        
     
     def insert_ordered(self, value):
         self.head = self._insert_ordered(value, self.head)
@@ -151,7 +158,7 @@ def run_commands_on_tree(tree):
             
             while n != None:
                 if n.data.name == command[1]:
-                    n.data = None
+                    tree.children.remove(n)
                     found = True
                     break
                 n = n.next
@@ -160,7 +167,7 @@ def run_commands_on_tree(tree):
                 print("  directory successfully removed!")
             else:
                 print("  No folder with that name exists")
-                print("  current directory: " + tree.name)
+                
         else:
             print("  command not recognized")
 
