@@ -123,83 +123,59 @@ class PrefixParseTree:
         except:
             self.simplify_tree_recur(node.left)
             self.simplify_tree_recur(node.right)
-        
-
-
-    # def simplify_tree_helper(self, node):
-
-    #     if node != None:
-    #         # Use [-1] to only get the number, not the negative sign if there is one
-    #         if node.left.data[-1].isdigit() and node.right.data[-1].isdigit():
-    #             if node.data == '+':
-    #                 node.data = str(int(node.left.data) + int(node.right.data))
-                
-    #             elif node.data == '-':
-    #                 node.data = str(int(node.left.data) - int(node.right.data))
-                
-    #             elif node.data == '*':
-    #                 node.data = str(int(node.left.data) * int(node.right.data))
-                
-    #             elif node.data == '/':
-    #                 if int(node.right.data) == 0:
-    #                     raise DivisionByZero()
-                    
-    #                 node.data = str(int(int(node.left.data) / int(node.right.data)))
-                
-    #             node.left = None
-    #             node.right = None
-                
-    #             if not node is self.root:
-    #                 return node.parent
-                
-    #             return node
-            
-                    
-    #         elif node.left.data in ['+', '-', '*', '/']:
-    #             return node.left
-            
-    #         elif node.right.data in ['+', '-', '*', '/']:
-    #             return node.right
-            
-    #         else:
-    #             return None
-
+    
 
     def solve_tree(self, root_value):
         return self.solve_tree_recur(root_value, self.root)
 
-    def solve_tree_recur(self, root_value, node):
-        if self.simple != True:
-            self.simplify_tree()
+    # def solve_tree_recur(self, root_value, node):
+    #     if self.simple != True:
+    #         self.simplify_tree()
 
-        if node.left != None and node.right != None:
-            if node.left.data not in ['+', '-', '*', '/'] and not node.left.data.isdigit():
-                if node.data == '+':
-                    return root_value - int(node.right.data)
+    #     if node.left != None and node.right != None:
+    #         if node.left.data not in ['+', '-', '*', '/'] and not node.left.data.isdigit():
+    #             if node.data == '+':
+    #                 return root_value - int(node.right.data)
                 
-                elif node.data == '-':
-                    return root_value + int(node.right.data)
+    #             elif node.data == '-':
+    #                 return root_value + int(node.right.data)
             
-            elif node.right.data not in ['+', '-', '*', '/'] and not node.right.data.isdigit():
-                if node.data == '+':
-                    return int(node.left.data) + root_value
+    #         elif node.right.data not in ['+', '-', '*', '/'] and not node.right.data.isdigit():
+    #             if node.data == '+':
+    #                 return int(node.left.data) + root_value
                 
-                elif node.data == '-':
-                    return int(node.left.data) - root_value
+    #             elif node.data == '-':
+    #                 return int(node.left.data) - root_value
 
-            else:
-                self.solve_tree_recur(root_value, node.left)
-                self.solve_tree_recur(root_value, node.right)
+    #         else:
+    #             self.solve_tree_recur(root_value, node.left)
+    #             self.solve_tree_recur(root_value, node.right)
     
-    def solve(self, root_value):
-        a_str = self.str_infix(self.root)
 
-        for letter in a_str:
-            if letter == ' ' or letter == '(' or letter == ')':
-                continue
+    def solve_tree_recur(self, root_value, node):
+        
+        if node.left == None:
+            return int(node.data)
 
-            if letter == 'x':
-                
+        if node.left.data[-1].isdigit():
+            if node.data == '+':
+                root_value = root_value - self.solve_tree_recur(root_value, node.left)
+            
+            elif node.data == '-':
+                root_value = root_value + self.solve_tree_recur(root_value, node.left)
+        
+
+        elif node.right.data[-1].isdigit():
+            if node.data == '+':
+                root_value = root_value - self.solve_tree_recur(root_value, node.right)
+            
+            elif node.data == '-':
+                root_value = root_value + self.solve_tree_recur(root_value, node.right)
+            
+        
+        return root_value
+            
+
 
 
     def str_prefix(self, node):
@@ -254,8 +230,8 @@ class PrefixParseTree:
 statement = ''
 
 pp = PrefixParseTree()
-pp.load_statement_string('- + - x 5 + 6 3 4')
-print(pp.solve_tree(12))
+pp.load_statement_string('+ x 6')
+print(pp.solve_tree(13))
 
 # This is a tester function to test that
 # the output and/or error message from the
