@@ -1,4 +1,4 @@
- current directory: root
+  current directory: root
   Listing the contents of current directory,  root
   Making subdirectory kennsla
   Making subdirectory nam

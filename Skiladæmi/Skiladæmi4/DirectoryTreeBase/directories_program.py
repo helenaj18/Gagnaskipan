@@ -16,13 +16,6 @@ class Linked_list:
         self.head = head
         self.size = 0
 
-    
-    # def push_front(self, value):
-    #     new_node = Node(value, self.head)
-    #     self.size += 1
-    #     self.head = new_node
-
-
     def _insert_ordered(self, value, node):
 
         if node == None:
@@ -35,9 +28,19 @@ class Linked_list:
         else:
             node.next = self._insert_ordered(value, node.next)
             return node
+        
+    
+    def insert_ordered(self, value):
+        '''Inserts a value at the correct 
+           position in a linked list'''
+
+        self.head = self._insert_ordered(value, self.head)
+
     
 
     def remove(self, node):
+        '''Removes a node from a linked list'''
+
         n = self.head
         if self.head == node:
             self.head = self.head.next
@@ -51,12 +54,12 @@ class Linked_list:
                 if n.next != None:
                     n = n.next
         
-    
-    def insert_ordered(self, value):
-        self.head = self._insert_ordered(value, self.head)
 
         
     def __contains__(self, val):
+        '''Returns True if a linked list 
+        contains value, else False'''
+
         n = self.head
         if n != None:
             while n != None:
@@ -122,18 +125,16 @@ def run_commands_on_tree(tree):
         elif command[0] == "cd":
             print("  switching to directory " + command[1])
             
-                # command[1] is the name of the subdirectory that should now become the current directory
+            # command[1] is the name of the subdirectory that should now become the current directory
             found = False
 
             n = tree.children.head
-            counter = 0
             while n != None:
                 if n.data.name == command[1]:
                     run_commands_on_tree(n.data)
                     found = True
                     break
                 
-                counter += 1
                 n = n.next
 
             if command[1] == "..":
@@ -151,7 +152,7 @@ def run_commands_on_tree(tree):
 
         elif command[0] == "rm":
             print("  removing directory " + command[1])
-                # command[1] is the name of the subdirectory that should now become the current directory
+            # command[1] is the name of the subdirectory that should now become the current directory
             found = False
 
             n = tree.children.head

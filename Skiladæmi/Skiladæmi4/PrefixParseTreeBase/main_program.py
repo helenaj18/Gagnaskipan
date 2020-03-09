@@ -23,7 +23,6 @@ class TreeNode:
         self.parent = parent
         
 
-
 class Tokenizer:
     def __init__(self, str_statement):
         self.statement = str_statement
@@ -47,9 +46,9 @@ class PrefixParseTree:
 
     def load_statement_string(self, statement):
         tokenizer = Tokenizer(statement)
-        self.root = self.load_statement_string_recur(tokenizer)
+        self.root = self._load_statement_string_recur(tokenizer)
     
-    def load_statement_string_recur(self, tokenizer, parent = None):
+    def _load_statement_string_recur(self, tokenizer, parent = None):
         token = tokenizer.get_next_token()
         new_node = TreeNode(token)
         new_node.parent = parent
@@ -59,8 +58,8 @@ class PrefixParseTree:
         elif token not in ['+', '-', '*', '/']:
             return TreeNode(token)
         
-        new_node.left = self.load_statement_string_recur(tokenizer, new_node)
-        new_node.right = self.load_statement_string_recur(tokenizer, new_node)
+        new_node.left = self._load_statement_string_recur(tokenizer, new_node)
+        new_node.right = self._load_statement_string_recur(tokenizer, new_node)
         
         return new_node
     
@@ -76,28 +75,36 @@ class PrefixParseTree:
         elif out_format.name == 'POSTFIX':
             self.format = 'postfix'
 
-    def root_value(self):
-        return self.root_value_recur(self.root)
 
-    def root_value_recur(self, n):
+    def root_value(self, plus_to_minus = False):
+        return self._root_value_recur(self.root, plus_to_minus)
+
+
+    def _root_value_recur(self, n, plus_to_minus = False):
+        PLUS = '+'
+        MINUS = '-'
+
+        if plus_to_minus:
+            PLUS = '-'
+            MINUS = '+'
 
         while n != None:
 
             if n.data[-1].isdigit():
                 return int(n.data)
             
-            elif n.data == '+':
-                return self.root_value_recur(n.left) + self.root_value_recur(n.right)
+            elif n.data == PLUS:
+                return self._root_value_recur(n.left) + self._root_value_recur(n.right)
 
-            elif n.data == '-':
-                return self.root_value_recur(n.left) - self.root_value_recur(n.right)
+            elif n.data == MINUS:
+                return self._root_value_recur(n.left) - self._root_value_recur(n.right)
 
             elif n.data == '*':
-                return self.root_value_recur(n.left) * self.root_value_recur(n.right)
+                return self._root_value_recur(n.left) * self._root_value_recur(n.right)
 
             elif n.data == '/':
-                a = self.root_value_recur(n.left)
-                b = self.root_value_recur(n.right)
+                a = self._root_value_recur(n.left)
+                b = self._root_value_recur(n.right)
 
                 if b == 0:
                     raise DivisionByZero()
@@ -108,74 +115,52 @@ class PrefixParseTree:
         
     
     def simplify_tree(self):
-        self.simplify_tree_recur(self.root)
+        self._simplify_tree_recur(self.root)
         self.simple = True
 
-    def simplify_tree_recur(self, node):
+
+    def _simplify_tree_recur(self, node):
 
         if node == None:
             return None
 
         try:
-            node.data = str(self.root_value_recur(node))
+            node.data = str(self._root_value_recur(node))
             node.left = None
             node.right = None      
         except:
-            self.simplify_tree_recur(node.left)
-            self.simplify_tree_recur(node.right)
+            self._simplify_tree_recur(node.left)
+            self._simplify_tree_recur(node.right)
     
 
     def solve_tree(self, root_value):
-        return self.solve_tree_recur(root_value, self.root)
+        return self._solve_tree_recur(root_value, self.root)
 
-    # def solve_tree_recur(self, root_value, node):
-    #     if self.simple != True:
-    #         self.simplify_tree()
+    def _solve_tree_recur(self, root_value, node):
+        plus_to_minus = False
 
-    #     if node.left != None and node.right != None:
-    #         if node.left.data not in ['+', '-', '*', '/'] and not node.left.data.isdigit():
-    #             if node.data == '+':
-    #                 return root_value - int(node.right.data)
-                
-    #             elif node.data == '-':
-    #                 return root_value + int(node.right.data)
-            
-    #         elif node.right.data not in ['+', '-', '*', '/'] and not node.right.data.isdigit():
-    #             if node.data == '+':
-    #                 return int(node.left.data) + root_value
-                
-    #             elif node.data == '-':
-    #                 return int(node.left.data) - root_value
-
-    #         else:
-    #             self.solve_tree_recur(root_value, node.left)
-    #             self.solve_tree_recur(root_value, node.right)
-    
-
-    def solve_tree_recur(self, root_value, node):
-        
+        # if it hasn't been simplified already, do it now
+        if not self.simple:
+            self.simplify_tree()
+ 
         if node.left == None:
-            return int(node.data)
-
-        if node.left.data[-1].isdigit():
-            if node.data == '+':
-                root_value = root_value - self.solve_tree_recur(root_value, node.left)
-            
-            elif node.data == '-':
-                root_value = root_value + self.solve_tree_recur(root_value, node.left)
+            return
         
+        else:
+            self._solve_tree_recur(root_value, node.left)
+            self._solve_tree_recur(root_value, node.right)
 
-        elif node.right.data[-1].isdigit():
-            if node.data == '+':
-                root_value = root_value - self.solve_tree_recur(root_value, node.right)
+            if not node.left.data[-1].isdigit() and node.left.data not in ['+', '-', '*', '/']:
+                # change the unknown variable to the root
+                node.left.data = str(root_value)
+                # it's a left node so the plus needs to be changed to a minus in the root value function
+                # and the minus to a plus
+                plus_to_minus = True
             
-            elif node.data == '-':
-                root_value = root_value + self.solve_tree_recur(root_value, node.right)
-            
-        
-        return root_value
-            
+            elif not node.right.data[-1].isdigit() and node.right.data not in ['+', '-', '*', '/']:
+                node.right.data = str(root_value)
 
+        return self.root_value(plus_to_minus)
 
 
     def str_prefix(self, node):
@@ -215,7 +200,6 @@ class PrefixParseTree:
 
     def __str__(self):
 
-
         if self.format == 'prefix':
             a_str = self.str_prefix(self.root)
         
@@ -229,9 +213,6 @@ class PrefixParseTree:
 
 statement = ''
 
-pp = PrefixParseTree()
-pp.load_statement_string('+ x 6')
-print(pp.solve_tree(13))
 
 # This is a tester function to test that
 # the output and/or error message from the
@@ -273,7 +254,7 @@ def test_prefix_parser(str_statement, solve = False, root_value = 0):
     print("\n\n")
 
 
-if __name__ != "__main__":
+if __name__ == "__main__":
     org_out = sys.stdout
     fout = open(sys.path[0] + "/parse_out.txt", "w+")
     sys.stdout = fout

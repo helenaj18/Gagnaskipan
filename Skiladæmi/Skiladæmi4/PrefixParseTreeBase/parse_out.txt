@@ -767,7 +767,7 @@ POSTFIX: x 5 - 9 + 4 -
 
 
 PREFIX: - + - x 5 + 6 3 4 
-The value of x if the root_value is 12 is: None
+The value of x if the root_value is 12 is: 12
 
 
 
@@ -794,7 +794,7 @@ POSTFIX: 7 x - 5 + 4 -
 
 
 PREFIX: - + - 7 x + 2 3 4 
-The value of x if the root_value is 6 is: None
+The value of x if the root_value is 6 is: 2
 
 
 
