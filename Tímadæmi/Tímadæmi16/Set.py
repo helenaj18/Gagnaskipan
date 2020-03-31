@@ -15,6 +15,22 @@ class Set_BST:
         if self.contains(value) == False:
             self.root = self._add(value, self.root)
             self.size += 1
+
+    # hans lausn
+    # def _add(self, value, node):
+    #     if node == None:
+    #         self.size += 1
+    #         return BSTSetNode(value)
+    #     elif value < node.value:
+    #         node.left = self._add(value, node.left)
+    #     elif node.value < value:
+    #         node.right = self._add(value, node.right)
+    #     return node
+
+    # def add(self, value):
+    #     self.root = self._add(value, self.root)
+
+
     
     def _add(self, value, node):
         
